@@ -58,7 +58,7 @@ Para uma melhor experiência no Antigravity IDE, recomendamos abrir/definir o ca
 
 Usando `uv` ou `pip`:
 ```bash
-pip install -r requirements.txt
+pip install -r scripts/requirements.txt
 # ou usando uv:
 uv sync
 ```
