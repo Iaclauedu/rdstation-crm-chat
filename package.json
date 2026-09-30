@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun run server.ts",
-    "start": "bun run server.ts",
-    "build": "echo 'Ready for Vercel deployment'"
+    "start": "bun run server.ts"
   },
   "keywords": [
     "rdstation",

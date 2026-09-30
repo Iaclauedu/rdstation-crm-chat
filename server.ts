@@ -102,6 +102,9 @@ const server = serve({
 
     // Static Files
     let filePath = join(PUBLIC_DIR, url.pathname === "/" ? "index.html" : url.pathname);
+    if (!existsSync(filePath)) {
+      filePath = join(import.meta.dir, url.pathname === "/" ? "index.html" : url.pathname);
+    }
     if (existsSync(filePath)) {
       const file = Bun.file(filePath);
       return new Response(file);

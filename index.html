@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RD Station CRM • MCP AI Chat</title>
+  <meta name="description" content="Interface moderna de chat e análise para RD Station CRM conectado via Model Context Protocol (MCP)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="brand-info">
+            <span class="brand-title">RD Station CRM</span>
+            <span class="brand-badge">MCP Client</span>
+          </div>
+        </div>
+        <button class="icon-btn" id="btn-toggle-sidebar" title="Recolher menu" aria-label="Recolher menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <line x1="9" x2="9" y1="3" y2="21"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="new-chat-btn" id="btn-new-chat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Nova Conversa
+        </button>
+      </div>
+
+      <!-- Quick Funnels Navigation -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>Funis de Vendas</span>
+          <span class="count-badge" id="funnels-count-badge">0</span>
+        </div>
+        <div class="funnels-list" id="funnels-list">
+          <div class="sidebar-loading">Carregando funis...</div>
+        </div>
+      </div>
+
+      <!-- Quick Queries -->
+      <div class="sidebar-section">
+        <div class="section-title">Consultas Rápidas</div>
+        <div class="quick-links">
+          <button class="quick-link-item" data-query="quantas oportunidades abertas existem no funil da AllDot?">
+            <span class="ql-icon">🎯</span>
+            <span class="ql-text">Oportunidades AllDot</span>
+          </button>
+          <button class="quick-link-item" data-query="Quais são todos os funis de vendas cadastrados?">
+            <span class="ql-icon">📊</span>
+            <span class="ql-text">Listar todos os funis</span>
+          </button>
+          <button class="quick-link-item" data-query="Qual é o resumo geral de oportunidades (abertas, ganhas e perdidas)?">
+            <span class="ql-icon">📈</span>
+            <span class="ql-text">Resumo geral CRM</span>
+          </button>
+          <button class="quick-link-item" data-query="Listar organizações e empresas recentes">
+            <span class="ql-icon">🏢</span>
+            <span class="ql-text">Empresas / Organizações</span>
+          </button>
+          <button class="quick-link-item" data-query="Listar contatos recentes">
+            <span class="ql-icon">👥</span>
+            <span class="ql-text">Contatos recentes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MCP Connection Footer Info -->
+      <div class="sidebar-footer">
+        <div class="mcp-status-card">
+          <div class="status-indicator-row">
+            <div class="pulse-dot"></div>
+            <span class="status-label">MCP SSE Conectado</span>
+            <span class="status-latency" id="footer-latency">-- ms</span>
+          </div>
+          <div class="mcp-details-text">
+            <span>Servidor: RD Mentor MCP</span>
+            <span>Limite: 120 req/min</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Navbar -->
+      <header class="navbar">
+        <div class="navbar-left">
+          <button class="icon-btn mobile-menu-btn" id="btn-mobile-menu" aria-label="Abrir menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="chat-header-title">
+            <h2>RD Station CRM Assistant</h2>
+            <div class="connection-pill">
+              <span class="dot-online"></span>
+              <span class="conn-text">MCP Conectado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-right">
+          <button class="nav-action-btn" id="btn-open-tools" title="Inspetor de Ferramentas MCP">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+            <span>Ferramentas MCP (54)</span>
+          </button>
+          <button class="nav-action-btn secondary" id="btn-clear-chat" title="Limpar mensagens">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Limpar</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat Messages Container -->
+      <div class="chat-container" id="chat-container">
+        <!-- Hero Banner (hidden when conversation has messages) -->
+        <div class="welcome-hero" id="welcome-hero">
+          <div class="hero-badge">Model Context Protocol • RD Station CRM v2</div>
+          <h1 class="hero-title">Pergunte ao seu CRM em tempo real</h1>
+          <p class="hero-subtitle">Consulte oportunidades, analise funis de venda, pesquise contatos e organizações através de inteligência conectada ao MCP.</p>
+
+          <div class="starter-grid">
+            <div class="starter-card" data-query="quantas oportunidades abertas existem no funil da AllDot?">
+              <div class="sc-icon">🎯</div>
+              <div class="sc-content">
+                <span class="sc-title">Oportunidades AllDot</span>
+                <span class="sc-desc">"Quantas oportunidades abertas existem no funil da AllDot?"</span>
+              </div>
+              <span class="sc-arrow">→</span>
+            </div>
+
+            <div class="starter-card" data-query="Quais são todos os funis de vendas cadastrados?">
+              <div class="sc-icon">📊</div>
+              <div class="sc-content">
+                <span class="sc-title">Listar Funis de Venda</span>
+                <span class="sc-desc">"Quais são todos os funis de vendas cadastrados?"</span>
+              </div>
+              <span class="sc-arrow">→</span>
+            </div>
+
+            <div class="starter-card" data-query="Qual é o resumo geral de oportunidades (abertas, ganhas e perdidas)?">
+              <div class="sc-icon">📈</div>
+              <div class="sc-content">
+                <span class="sc-title">Resumo Geral de Oportunidades</span>
+                <span class="sc-desc">"Qual o panorama geral de negócios abertos, ganhos e perdidos?"</span>
+              </div>
+              <span class="sc-arrow">→</span>
+            </div>
+
+            <div class="starter-card" data-query="Listar organizações cadastradas no CRM">
+              <div class="sc-icon">🏢</div>
+              <div class="sc-content">
+                <span class="sc-title">Listar Organizações</span>
+                <span class="sc-desc">"Listar empresas e organizações recentes no CRM"</span>
+              </div>
+              <span class="sc-arrow">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Stream -->
+        <div class="chat-messages" id="chat-messages"></div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator-row hidden" id="typing-indicator">
+          <div class="bot-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="typing-bubble">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <span class="typing-text">Consultando MCP da RD Station...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="chat-input-wrapper">
+        <!-- Floating quick chips -->
+        <div class="suggestion-chips" id="suggestion-chips">
+          <button class="chip" data-query="quantas oportunidades abertas existem no funil da AllDot?">📊 Oportunidades AllDot</button>
+          <button class="chip" data-query="Quais são os funis de vendas?">🎯 Listar Funis</button>
+          <button class="chip" data-query="Resumo geral de negócios">📈 Resumo Geral</button>
+          <button class="chip" data-query="Listar empresas">🏢 Organizações</button>
+        </div>
+
+        <form class="input-form" id="chat-form">
+          <div class="input-container">
+            <textarea
+              id="user-input"
+              rows="1"
+              placeholder="Pergunte sobre seus funis, oportunidades, contatos ou digite /tool..."
+              autocomplete="off"
+            ></textarea>
+            
+            <div class="input-actions">
+              <button type="submit" class="send-btn" id="btn-send" aria-label="Enviar mensagem">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="input-footer-hint">
+            <span>Pressione <strong>Enter</strong> para enviar, <strong>Shift+Enter</strong> para nova linha. Suporta linguagem natural ou <code>/tool nome_ferramenta</code></span>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- MCP Tools Inspector Drawer/Modal -->
+    <div class="modal-backdrop hidden" id="tools-modal-backdrop">
+      <div class="tools-drawer" id="tools-drawer">
+        <div class="drawer-header">
+          <div class="drawer-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+            <h3>Inspetor de Ferramentas MCP</h3>
+          </div>
+          <button class="icon-btn" id="btn-close-tools" aria-label="Fechar inspetor">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="drawer-body">
+          <div class="form-group">
+            <label for="select-tool">Selecione a Ferramenta MCP:</label>
+            <select id="select-tool" class="custom-select">
+              <option value="">Carregando ferramentas...</option>
+            </select>
+          </div>
+
+          <div class="tool-meta-box" id="tool-meta-box">
+            <p class="tool-desc" id="tool-desc">Selecione uma ferramenta acima para inspecionar parâmetros e executar.</p>
+          </div>
+
+          <div class="form-group">
+            <label for="tool-args-input">Argumentos JSON (arguments):</label>
+            <textarea id="tool-args-input" class="code-textarea" rows="6">{}</textarea>
+          </div>
+
+          <button class="run-tool-btn" id="btn-run-tool">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Executar no MCP
+          </button>
+
+          <div class="execution-result-section hidden" id="tool-result-section">
+            <div class="result-header">
+              <span>Resultado da Execução</span>
+              <span class="exec-time" id="exec-duration">-- ms</span>
+            </div>
+            <pre class="json-output"><code id="tool-result-code"></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
