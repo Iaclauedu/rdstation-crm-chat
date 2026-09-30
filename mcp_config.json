@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rdstation-crm": {
+      "url": "https://mcp.rdstationmentor.com/crm/mcp?key=01a0f3d5-5d7f-7ad0-9b06-0b89467e7cc7",
+      "transport": "sse"
+    }
+  }
+}

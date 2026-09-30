@@ -1,0 +1,27 @@
+{
+  "name": "rdstation-crm-chat",
+  "version": "1.0.0",
+  "description": "Interface web de chat moderna para consulta ao RD Station CRM via MCP",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run server.ts",
+    "start": "bun run server.ts",
+    "build": "echo 'Ready for Vercel deployment'"
+  },
+  "keywords": [
+    "rdstation",
+    "crm",
+    "mcp",
+    "chat",
+    "vercel"
+  ],
+  "author": "Iaclauedu",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/node": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}
