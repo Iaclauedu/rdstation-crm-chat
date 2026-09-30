@@ -1,0 +1,6 @@
+# Ignore Python scripts and CLI from Vercel deployment
+src/
+scripts/
+*.py
+*.txt
+mcp_config.json
